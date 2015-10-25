@@ -28,7 +28,7 @@ router.get('/placeinfo', function(req, res) {
 
 app.use('/', router);
 
-var server = app.listen(3000, function () {
+var server = app.listen(process.env.PORT || 8888, function () {
   var host = server.address().address;
   var port = server.address().port;
 
