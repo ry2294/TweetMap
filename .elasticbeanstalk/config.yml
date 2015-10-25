@@ -1,0 +1,10 @@
+branch-defaults:
+  master:
+    environment: TweetMap-dev
+global:
+  application_name: TweetMap
+  default_ec2_keyname: tweetMap
+  default_platform: Node.js
+  default_region: us-west-2
+  profile: eb-cli
+  sc: git
