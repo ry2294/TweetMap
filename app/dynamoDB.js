@@ -29,6 +29,8 @@ utilDynamoDB.getPlaceInfo = function(req, res) {
 	        	location.push({
 	        		x: item.x, 
 	        		y: item.y,
+	        		city: item.city,
+	        		country: item.country,
                     tweetCount: item.tweetCount
 	        	});
 	        });

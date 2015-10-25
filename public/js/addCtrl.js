@@ -9,41 +9,35 @@ addCtrl.controller('addCtrl', function($scope, $http, $rootScope){
     });
 
     $http.get('/placeinfo').success(function(response){
-    	console.log('response = ' + response);
-		
-/*
-		var marker = new google.maps.Marker({
-			position: city,
-			map: map,
-			title: 'Uluru (Ayers Rock)'
-		});
-*/
 		for(i = 0; i < response.length; i++) {
 			var x =  parseFloat(response[i].x.N);
-			console.log(x);
 			var y =  parseFloat(response[i].y.N);
-			console.log(y);
+			var cityName = response[i].city.S;
+			var country = response[i].country.S;
+			country = country.substring(1, country.length-1);
 			var tweetCount =  response[i].tweetCount.N;
-			console.log(tweetCount);
 
 			var city = {lat: y, lng: x};
-
-			var infowindow = new google.maps.InfoWindow({
-			    content: "tweetCount " + tweetCount,
-			    maxWidth: 200
-			  });
+			var contentString = '<h4>' 
+				+ cityName + ', ' + country + '</h4>'
+				+ '<h5>'+'Tweets = '+ tweetCount + '</h5';
 
 			var marker = new google.maps.Marker({
 	            position: city,
 	            map: map,
-	            title: "Big Map"
+	            title: 'Place Information',
 	        });
 
-			marker.addListener('click', function() {
-				infowindow.open(map, marker);
+	        marker.info = new google.maps.InfoWindow({
+				position: city,
+				content: contentString,
+				maxWidth: 200
 			});
-			console.log('after creating marker');
+
+	        marker.addListener('click', function(){
+                this.info.open(map, this);
+            });
 		}
-		
+
     }).error(function(){});
 });
