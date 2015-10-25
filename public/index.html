@@ -1,0 +1,46 @@
+<!doctype html>
+<html class="no-js" ng-app="tweetMapApp">
+<head>
+    <style>
+      #map {
+        height: 700px;
+      }
+    </style>
+    <title>Tweet Map</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+
+    <!-- Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js"></script>
+    <!-- Modernizr -->
+    <script src="../bower_components/modernizr/bin/modernizr"></script>
+    <!-- JS Source -->
+    <script src="../bower_components/jquery/dist/jquery.js"></script>
+    <script src="../bower_components/angular/angular.js"></script>
+    <script src="../bower_components/angular-route/angular-route.js"></script>
+    <script src="../bower_components/angularjs-geolocation/dist/angularjs-geolocation.min.js"></script>
+    <!-- Angular Source -->
+    <script src="js/app.js"></script>
+    <script src="js/addCtrl.js"></script>
+    <script src="js/gservice.js"></script>
+
+</head>
+
+<body ng-controller="addCtrl">
+    <div>
+      <nav class="navbar navbar-inverse navbar-static-top">
+        <a class="navbar-brand" href="/">Tweet Map</a>
+        <div class="container">
+            <ul class="nav navbar-nav">
+                <li class="active">
+                    <a href="/">Home</a>
+                </li>
+            </ul>
+        </div>
+        </nav>
+      <div id="map" class="jumbotron"  style="padding:40px;"></div>
+    </div>
+</body>
+
+</html>
