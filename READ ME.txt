@@ -1,0 +1,6 @@
+Tweet Map
+
+This nodejs web application is used to get imformation from DynamoDB and processes. 
+Then plots all the points on Google Map with information about tweets.
+
+Website URL: http://ry2294-tweetmap-dev.elasticbeanstalk.com/
