@@ -1,8 +1,9 @@
 var AWS = require('aws-sdk');
+var _ = require('underscore');
 
 AWS.config.update({
-    accessKeyId: 'AKIAJMEQ34ZJZFHTL5VA', 
-    secretAccessKey: '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'});
+    accessKeyId: 'AKIAILGFDNFXVTZBNTCA', 
+    secretAccessKey: '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'});
 
 AWS.config.update({region: 'us-west-2'});
 
@@ -22,7 +23,16 @@ utilDynamoDB.getPlaceInfo = function(req, res) {
 	    else {
 	        console.log(JSON.stringify(data.Count));
 	        console.log(JSON.stringify(data.Items[0]));
-	     	res.json(JSON.stringify(data.Items[0]));
+	        console.log(data.Items[0].x);
+	        var location = [];
+	        _.each(data.Items, function(item) {
+	        	location.push({
+	        		x: item.x, 
+	        		y: item.y,
+                    tweetCount: item.tweetCount
+	        	});
+	        });
+	        res.status(200).json(location);
 	    }
 	});
 }
