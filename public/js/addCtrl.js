@@ -8,36 +8,45 @@ addCtrl.controller('addCtrl', function($scope, $http, $rootScope){
         mapTypeId: google.maps.MapTypeId.ROADMAP
     });
 
-    $http.get('/placeinfo').success(function(response){
-		for(i = 0; i < response.length; i++) {
-			var x =  parseFloat(response[i].x.N);
-			var y =  parseFloat(response[i].y.N);
-			var cityName = response[i].city.S;
-			var country = response[i].country.S;
-			country = country.substring(1, country.length-1);
-			var tweetCount =  response[i].tweetCount.N;
+    $http.get('/getHashTags').success(function(response) {
+    	// console.log('response = ' + JSON.stringify(response));
+    	var places = response["places"];
 
-			var city = {lat: y, lng: x};
-			var contentString = '<h4>' 
-				+ cityName + ', ' + country + '</h4>'
-				+ '<h5>'+'Tweets = '+ tweetCount + '</h5';
+    	for(var placeId in places) {
+    		if(places.hasOwnProperty(placeId)){
+    			var placeValue = places[placeId];
+    			var x =  parseFloat(placeValue.x);
+				var y =  parseFloat(placeValue.y);
+				var cityName = placeValue.city;
+				var country = placeValue.country;
+				country = country.substring(1, country.length-1);
+				var tweetCount =  placeValue.tweetCount;
+				var tweetdata = placeValue.tweets;
 
-			var marker = new google.maps.Marker({
-	            position: city,
-	            map: map,
-	            title: 'Place Information',
-	        });
+				var city = {lat: y, lng: x};
+				var contentString = '<h4>' 
+					+ cityName + ', ' + country + '</h4>'
+					+ '<h5>'+'Tweets = '+ tweetCount + '</h5'
+					+ '<div>'
+					+ '<pr>' + tweetdata + '</pr>'
+					+ '</div>';
 
-	        marker.info = new google.maps.InfoWindow({
-				position: city,
-				content: contentString,
-				maxWidth: 200
-			});
+				var marker = new google.maps.Marker({
+		            position: city,
+		            map: map,
+		            title: 'Place Information',
+		        });
 
-	        marker.addListener('click', function(){
-                this.info.open(map, this);
-            });
-		}
+		        marker.info = new google.maps.InfoWindow({
+					position: city,
+					content: contentString,
+					maxWidth: 200
+				});
 
+		        marker.addListener('click', function(){
+	                this.info.open(map, this);
+	            });
+    		}
+    	}
     }).error(function(){});
 });

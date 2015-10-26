@@ -26,6 +26,10 @@ router.get('/placeinfo', function(req, res) {
 	utilDynamoDB.getPlaceInfo(req, res);
 });
 
+router.get('/getHashTags', function(req, res) {
+	utilDynamoDB.getHashTags(req, res);
+});
+
 app.use('/', router);
 
 var server = app.listen(process.env.PORT || 8888, function () {
