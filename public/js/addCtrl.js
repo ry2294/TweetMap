@@ -8,12 +8,13 @@ addCtrl.controller('addCtrl', function($scope, $http, $rootScope){
         mapTypeId: google.maps.MapTypeId.ROADMAP
     });
 
-    $http.get('/getHashTags').success(function(response) {
-    	// console.log('response = ' + JSON.stringify(response));
+    $http.get('/getTweetData').success(function(response) {
+    	//console.log('response = ' + JSON.stringify(response));
     	var places = response["places"];
-
+    	//console.log('places = ' + JSON.stringify(places));
     	for(var placeId in places) {
     		if(places.hasOwnProperty(placeId)){
+
     			var placeValue = places[placeId];
     			var x =  parseFloat(placeValue.x);
 				var y =  parseFloat(placeValue.y);

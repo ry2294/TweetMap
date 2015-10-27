@@ -22,12 +22,8 @@ router.get('/', function(req, res) {
 	res.sendFile(path.join(__dirname+'/index.html'));
 });
 
-router.get('/placeinfo', function(req, res) {
-	utilDynamoDB.getPlaceInfo(req, res);
-});
-
-router.get('/getHashTags', function(req, res) {
-	utilDynamoDB.getHashTags(req, res);
+router.get('/getTweetData', function(req, res) {
+	utilDynamoDB.getTweetData(req, res);
 });
 
 app.use('/', router);
