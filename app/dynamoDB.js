@@ -2,8 +2,8 @@ var AWS = require('aws-sdk');
 var _ = require('underscore');
 
 AWS.config.update({
-    accessKeyId: '', 
-    secretAccessKey: ''});
+    accessKeyId: 'AKIAJW4BQACZY3DBNJFQ', 
+    secretAccessKey: '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'});
 
 AWS.config.update({region: 'us-west-2'});
 
