@@ -6,6 +6,7 @@ var path    = require("path");
 var utilDynamoDB = require('./app/dynamoDB');
 
 var app = express();
+var http = require('http').Server(app);
 app.use(express.static(path.join(__dirname,'public')));
 app.use('/bower_components',  express.static(__dirname + '/bower_components'));
 
@@ -22,15 +23,26 @@ router.get('/', function(req, res) {
 	res.sendFile(path.join(__dirname+'/index.html'));
 });
 
-router.get('/getTweetData', function(req, res) {
-	utilDynamoDB.getTweetData(req, res);
-});
-
 app.use('/', router);
 
-var server = app.listen(process.env.PORT || 8888, function () {
+var server = http.listen(process.env.PORT || 8888, function(){
   var host = server.address().address;
   var port = server.address().port;
 
   console.log('Example app listening at http://%s:%s', host, port);
 });
+
+var io = require('socket.io').listen(server);
+io.on('connection', function(socket){
+  console.log('a user connected');
+  utilDynamoDB.getTweetData(io, 'get tweets');
+  socket.on('disconnect', function(){
+    console.log('user disconnected');
+  });
+});
+
+// Send to Everyone
+setInterval(function() {
+	utilDynamoDB.getTweetData(io, 'get tweets');
+  	console.log('emitting');
+}, 9000 );

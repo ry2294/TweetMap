@@ -16,7 +16,7 @@ var getTweetDataParams = {
 
 var utilDynamoDB = {};
 
-utilDynamoDB.getTweetData = function(req, res) {
+utilDynamoDB.getTweetData = function(io, channel) {
 	console.log('inside getTweetData');
 	dynamodb.scan(getTweetDataParams, function(error, dataTweet) {
 		if (error) console.log(JSON.stringify(error));
@@ -46,7 +46,7 @@ utilDynamoDB.getTweetData = function(req, res) {
 
 	        var response = {};
 			response["places"] = placeInfo;
-			res.status(200).json(response);
+			io.emit(channel, response);
 		}
 	});
 }
