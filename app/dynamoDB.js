@@ -10,49 +10,39 @@ AWS.config.update({
 var dynamodbDoc = new AWS.DynamoDB.DocumentClient();
 var dynamodb = new AWS.DynamoDB();
 
-var getTweetDataParams = {
-	TableName: "tweet_tbl"
-}
+var constructPlace = function (rawPlace) {
+	var place = {};
+	console.log('raw place test = ' + JSON.stringify(rawPlace.trends));
+	place.woeid = rawPlace.woeid.S != null ? rawPlace.woeid.S : rawPlace.woeid;
 
-var constructTweet = function (rawTweet) {
-	var tweet = {};
-	tweet.placeId = rawTweet.placeId.S != null ? rawTweet.placeId.S : rawTweet.placeId;
-	tweet.x = rawTweet.x.N != null ? rawTweet.x.N : rawTweet.x;
-	tweet.y = rawTweet.y.N != null ? rawTweet.y.N : rawTweet.y;
-	tweet.city = rawTweet.city.S != null ? rawTweet.city.S : rawTweet.city;
-	tweet.country = rawTweet.country.S != null ? rawTweet.country.S : rawTweet.country;
-	if(rawTweet.sentiment != null)
-		tweet.sentiment = rawTweet.sentiment.S != null ? rawTweet.sentiment.S : rawTweet.sentiment;
-	var userName = rawTweet.userName.S != null ? rawTweet.userName.S : rawTweet.userName;
-	var text = rawTweet.text.S != null ? rawTweet.text.S : rawTweet.text;
-	tweet.tweetText = 'User: ' + userName 
-						+ '<br>Sentiment: ' 
-						+ tweet.sentiment 
-						+ '<br>Tweet: ' + text;
-	tweet.tweets = '<br><br>' + tweet.tweetText;
-	tweet.tweetCount = 1;
-	return tweet;
+	place.x = rawPlace.x.N != null ? rawPlace.x.N : rawPlace.x;
+	place.y = rawPlace.y.N != null ? rawPlace.y.N : rawPlace.y;
+	place.city = rawPlace.city.S != null ? rawPlace.city.S : rawPlace.city;
+	place.country = rawPlace.country.S != null ? rawPlace.country.S : rawPlace.country;
+	place.tweets = rawPlace.tweets.S != null ? rawPlace.tweets.S : rawPlace.tweets;
+	place.tweetCount = rawPlace.tweetCount.N != null ? rawPlace.tweetCount.N : rawPlace.tweetCount;
+	place.positive = rawPlace.positive.N != null ? rawPlace.positive.N : rawPlace.positive;
+	place.negative = rawPlace.negative.N != null ? rawPlace.negative.N : rawPlace.negative;
+	place.neutral = rawPlace.neutral.N != null ? rawPlace.neutral.N : rawPlace.neutral;
+	place.sentimenterror = rawPlace.sentimenterror.N != null ? rawPlace.sentimenterror.N : rawPlace.sentimenterror;
+	place.trends = rawPlace.trends.S != null ? rawPlace.trends.S : rawPlace.trends;
+	return place;
 };
 
 var utilDynamoDB = {};
 
-utilDynamoDB.getAllTweets = function(io, channel) {
-	console.log('inside getAllTweets');
-	dynamodb.scan(getTweetDataParams, function(error, dataTweet) {
+utilDynamoDB.getAllPlaces = function(io, channel) {
+	console.log('inside getAllPlaces');
+	dynamodb.scan({TableName: "place_tbl"}, function(error, places) {
 		if (error) console.log(JSON.stringify(error));
 		else {
 			var placeInfo = {};
-			console.log(JSON.stringify(dataTweet.Items[0]));
+			console.log(JSON.stringify(places.Items[0]));
 
-	        _.each(dataTweet.Items, function(rawtweet) {
-	        	if(rawtweet.sentiment != null && rawtweet.sentiment.S != "") {
-		        	var tweet = constructTweet(rawtweet);
-		        	if(placeInfo[tweet.placeId] == null) {
-		        		placeInfo[tweet.placeId] = tweet;
-		        	} else {
-		        		placeInfo[tweet.placeId].tweets = placeInfo[tweet.placeId].tweets + '<br><br>' + tweet.tweetText;
-		        		placeInfo[tweet.placeId].tweetCount = placeInfo[tweet.placeId].tweetCount + 1;
-		        	}
+	        _.each(places.Items, function(rawPlace) {
+	        	if(rawPlace.tweetCount.N > 0) {
+	        		var place = constructPlace(rawPlace);
+	        		placeInfo[place.woeid] = place;
 	        	}
 	        });
 
@@ -63,17 +53,17 @@ utilDynamoDB.getAllTweets = function(io, channel) {
 	});
 };
 
-utilDynamoDB.getTweet = function (tweetId, io, channel) {
+utilDynamoDB.getPlace = function (woeid, io, channel) {
 	dynamodbDoc.get({
 		Key: {
-	        'tweetId': tweetId,
+	        'woeid': woeid,
 	    },
-	    TableName: 'tweet_tbl'
+	    TableName: 'place_tbl'
 	}, function(error, data){
     	if (error) console.log(error);
     	else {
     		console.log(JSON.stringify(data.Item));
-    		io.emit(channel, JSON.stringify(constructTweet(data.Item)));
+    		io.emit(channel, JSON.stringify(constructPlace(data.Item)));
     	} 
 	});
 };

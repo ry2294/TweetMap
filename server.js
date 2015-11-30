@@ -24,7 +24,7 @@ var server = http.listen(process.env.PORT || 5000, function(){
 var io = require('socket.io').listen(server);
 io.on('connection', function(socket){
   console.log('a user connected');
-  dynamoDB.getAllTweets(io, 'get tweets');
+  dynamoDB.getAllPlaces(io, 'get tweets');
   socket.on('disconnect', function(){
     console.log('user disconnected');
   });
@@ -32,7 +32,7 @@ io.on('connection', function(socket){
 
 var client = SNSClient(function(err, message) {
     console.log(message.Message);
-    dynamoDB.getTweet(message.Message, io, 'new tweet');
+    dynamoDB.getPlace(message.Message, io, 'new tweet');
 });
 
 app.post('/receive', client);
